@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUXE MATCH</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f5f2;
+      --surface: #ffffff;
+      --line: #e3e0da;
+      --text: #1a1a1a;
+      --text-muted: #8a8580;
+      --accent: #1a1a1a;
+      --radius: 2px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 80px 24px 120px;
+    }
+
+    .container { width: 100%; max-width: 620px; }
+
+    .header { text-align: center; margin-bottom: 48px; }
+    .header .eyebrow {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 500;
+      letter-spacing: 6px;
+      color: var(--text);
+      line-height: 1;
+    }
+    .header .subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-top: 14px;
+    }
+
+    .mode-row {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 48px;
+      border-bottom: 1px solid var(--line);
+    }
+    .mode-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid transparent;
+      padding: 12px 28px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: -1px;
+    }
+    .mode-btn.active { color: var(--text); border-bottom-color: var(--text); }
+
+    .quiz-progress { display: flex; gap: 8px; justify-content: center; margin-bottom: 40px; }
+    .quiz-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--line); transition: background 0.2s; }
+    .quiz-dot.done { background: var(--text-muted); }
+    .quiz-dot.current { background: var(--text); }
+
+    .quiz-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 56px 44px;
+      text-align: center;
+    }
+    .quiz-question {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 27px;
+      font-weight: 400;
+      margin-bottom: 36px;
+      line-height: 1.4;
+    }
+    .quiz-options { display: flex; flex-direction: column; gap: 1px; }
+    .quiz-option {
+      background: transparent;
+      border: 1px solid var(--line);
+      padding: 17px 20px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: left;
+      margin-top: -1px;
+    }
+    .quiz-option:hover { background: var(--bg); border-color: var(--text); position: relative; z-index: 1; }
+
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--text);
+      padding: 56px 44px;
+      text-align: center;
+    }
+    .result-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .result-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 400;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .result-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+    .result-section { text-align: left; margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--line); }
+    .result-section h4 {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+    .result-section p { font-size: 14px; line-height: 1.75; color: var(--text); font-weight: 300; }
+    .result-colors { display: flex; gap: 10px; margin-top: 8px; justify-content: center; }
+    .color-swatch { width: 20px; height: 20px; border: 1px solid var(--line); }
+    .retry-btn {
+      margin-top: 32px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--text-muted);
+      padding: 4px 0;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .retry-btn:hover { color: var(--text); border-color: var(--text); }
+
+    .browse-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+    .brand-card {
+      background: var(--surface);
+      padding: 24px 22px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .brand-card:hover { background: var(--bg); }
+    .brand-card .brand-name { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; margin-bottom: 6px; }
+    .brand-card .brand-mood { font-size: 10px; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase; }
+    .brand-card .brand-colors { display: flex; gap: 5px; margin-top: 14px; }
+    .brand-card .mini-swatch { width: 11px; height: 11px; border: 1px solid var(--line); }
+
+    .detail-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,26,26,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 10;
+    }
+    .detail-overlay.open { display: flex; }
+    .detail-card {
+      background: var(--surface);
+      border: 1px solid var(--text);
+      padding: 48px 40px;
+      max-width: 460px;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      text-align: center;
+    }
+    .detail-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .detail-close:hover { color: var(--text); }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 48px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .back-link:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <div class="eyebrow">Curated for you</div>
+      <h1>LUXE MATCH</h1>
+      <p class="subtitle">당신의 취향에 맞는 브랜드와 시그니처를 찾아드립니다</p>
+    </div>
+
+    <div class="mode-row">
+      <button class="mode-btn active" data-mode="quiz">스타일 진단</button>
+      <button class="mode-btn" data-mode="browse">브랜드 둘러보기</button>
+    </div>
+
+    <div id="quizView">
+      <div class="quiz-progress" id="quizProgress"></div>
+      <div class="quiz-card" id="quizCard"></div>
+    </div>
+
+    <div id="resultView" style="display:none;"></div>
+
+    <div id="browseView" style="display:none;">
+      <div class="browse-grid" id="browseGrid"></div>
+    </div>
+
+    <a href="../" class="back-link">← 앱 목록으로 돌아가기</a>
+  </div>
+
+  <div class="detail-overlay" id="detailOverlay">
+    <div class="detail-card" id="detailCard"></div>
+  </div>
+
+  <script>
+    const BRANDS = [
+      {
+        name: 'Chanel', kr: '샤넬',
+        tagline: '시대를 초월한 파리지엔의 우아함',
+        heritage: '1910년 코코 샤넬이 모자 부티크로 시작, 여성을 코르셋에서 해방시킨 혁신적 디자인으로 패션사를 바꾼 브랜드.',
+        philosophy: '단순함 속의 사치. 불필요한 장식을 걷어내고 실루엣과 소재로 우아함을 완성하는 미니멀 럭셔리.',
+        colors: ['#000000', '#ffffff', '#d4af37'],
+        moods: ['classic', 'minimal'],
+        signature: '클래식 플랩백, 트위드 재킷, 투톤 슬링백'
+      },
+      {
+        name: 'Hermès', kr: '에르메스',
+        tagline: '장인정신이 빚어낸 침묵의 우아함',
+        heritage: '1837년 마구(馬具) 공방으로 시작, 가죽 공예의 정점을 보여주는 가족 경영 브랜드로 성장.',
+        philosophy: '눈에 띄지 않아도 모두가 아는 가치. 로고보다 소재와 마감의 완벽함을 우선하는 조용한 럭셔리.',
+        colors: ['#FF6600', '#8B4513', '#1a1a1a'],
+        moods: ['classic', 'minimal'],
+        signature: '버킨백, 켈리백, 실크 스카프'
+      },
+      {
+        name: 'Dior', kr: '디올',
+        tagline: '여성스러움의 황금기를 되살린 쿠튀르',
+        heritage: '1947년 크리스챤 디올의 뉴 룩으로 2차대전 후 패션의 부활을 알린 브랜드.',
+        philosophy: '극적인 실루엣과 로맨틱한 디테일. 꽃처럼 피어나는 여성성을 정교한 구조로 표현.',
+        colors: ['#E8D5C4', '#000000', '#C0A062'],
+        moods: ['classic', 'bold'],
+        signature: '레이디 디올, 새들백, 바 재킷'
+      },
+      {
+        name: 'Louis Vuitton', kr: '루이비통',
+        tagline: '여행과 모험을 위한 견고한 우아함',
+        heritage: '1854년 견고한 트렁크 제작자로 출발, 모노그램 캔버스로 전 세계가 알아보는 아이콘이 됨.',
+        philosophy: '실용성과 화려함의 결합. 모노그램이라는 강력한 시각 언어로 정체성을 드러내는 브랜드.',
+        colors: ['#5A3A22', '#D4AF37', '#000000'],
+        moods: ['bold', 'classic'],
+        signature: '네버풀, 스피디백, 다미에 캔버스'
+      },
+      {
+        name: 'Gucci', kr: '구찌',
+        tagline: '맥시멀리즘과 위트가 만나는 이탈리안 무드',
+        heritage: '1921년 피렌체 가죽 공방으로 출발, 알레산드로 미켈레 시대를 거치며 레트로 맥시멀 미학으로 재탄생.',
+        philosophy: '과감한 패턴 믹스, 화려한 색감, 위트 있는 레퍼런스. 정해진 규칙을 깨는 자유로운 럭셔리.',
+        colors: ['#2E5E3A', '#C8102E', '#D4AF37'],
+        moods: ['bold', 'edgy'],
+        signature: '마몽 백, GG 마몽트, 호스빗 로퍼'
+      },
+      {
+        name: 'Saint Laurent', kr: '생로랑',
+        tagline: '록큰롤 정신이 흐르는 파리의 밤',
+        heritage: '1961년 이브 생로랑이 설립, 여성에게 턱시도를 입힌 르 스모킹으로 젠더 규범을 깬 브랜드.',
+        philosophy: '날카로운 실루엣과 블랙. 섹시함과 반항을 동시에 표현하는 록시크 미학.',
+        colors: ['#000000', '#8B0000', '#C0C0C0'],
+        moods: ['edgy', 'bold'],
+        signature: '카산드라 백, 르 스모킹 슈트, 스웨이드 부츠'
+      },
+      {
+        name: 'Bottega Veneta', kr: '보테가 베네타',
+        tagline: '로고 없이도 알아보는 침묵의 장인정신',
+        heritage: '1966년 베네토 지역에서 가죽 인트레치아토(엮기) 기법으로 시작한 이탈리아 가죽 명가.',
+        philosophy: '이니셜이 말해줄 때 로고는 필요 없다. 텍스처와 컬러로 존재감을 드러내는 콘템포러리 미니멀리즘.',
+        colors: ['#7FB069', '#000000', '#C9A87C'],
+        moods: ['minimal', 'modern'],
+        signature: '카세트백, 인트레치아토 가죽, 파우치'
+      },
+      {
+        name: 'Celine', kr: '셀린느',
+        tagline: '파리의 무심한 듯 완벽한 시크함',
+        heritage: '1945년 아동화 브랜드로 시작, 피비 파일로 시대 이후 미니멀 럭셔리의 대표 아이콘이 됨.',
+        philosophy: '꾸미지 않은 듯한 완벽함. 깨끗한 라인과 고급 소재로 표현하는 도시적 무심함.',
+        colors: ['#D4C5B0', '#000000', '#4A4A4A'],
+        moods: ['minimal', 'modern'],
+        signature: '럭게이지백, 트리옹프 캔버스, 박시 재킷'
+      },
+      {
+        name: 'Prada', kr: '프라다',
+        tagline: '지적이고 실험적인 안티 패션',
+        heritage: '1913년 가죽 제품 브랜드로 시작, 미우치아 프라다가 나일론 소재를 럭셔리로 끌어올린 혁신가.',
+        philosophy: '아름다움에 대한 의도적 거부. 어글리 시크로 불리는 지적이고 실험적인 미학.',
+        colors: ['#000000', '#8B0000', '#F5F0E1'],
+        moods: ['edgy', 'minimal'],
+        signature: '갈레리아백, 리나일론 백팩, 사피아노 가죽'
+      },
+      {
+        name: 'Fendi', kr: '펜디',
+        tagline: '로마의 태양 아래 빛나는 모피 헤리티지',
+        heritage: '1925년 로마에서 모피와 가죽 공방으로 출발, 칼 라거펠트와 함께 럭셔리 모피의 새 장을 엶.',
+        philosophy: '로마의 따뜻한 색감과 장식적 디테일. 전통 공예와 현대적 위트를 결합한 이탈리안 글래머.',
+        colors: ['#E8A33D', '#8B4513', '#FFD700'],
+        moods: ['bold', 'classic'],
+        signature: '바게트백, FF 로고, 페카부백'
+      },
+      {
+        name: 'Balenciaga', kr: '발렌시아가',
+        tagline: '건축적 실루엣의 미래주의자',
+        heritage: '1919년 크리스토발 발렌시아가가 설립, 쿠튀르의 건축가로 불리며 의상 구조를 재정의.',
+        philosophy: '과장된 실루엣과 해체적 디자인. 패션의 경계를 실험하는 아방가르드 정신.',
+        colors: ['#000000', '#C0C0C0', '#1a1a2e'],
+        moods: ['edgy', 'modern'],
+        signature: '시티백, 트리플S 스니커즈, 르 카곤'
+      },
+      {
+        name: 'Loewe', kr: '로에베',
+        tagline: '스페인 장인정신과 초현실적 위트',
+        heritage: '1846년 스페인 마드리드의 가죽 공방으로 출발, 조나단 앤더슨 체제 이후 예술적 행보로 주목받음.',
+        philosophy: '전통 가죽 공예와 초현실주의적 상상력의 결합. 진중함과 유머가 공존하는 독특한 균형.',
+        colors: ['#D2691E', '#2F4F2F', '#F5DEB3'],
+        moods: ['modern', 'edgy'],
+        signature: '퍼즐백, 아나그램 토트, 플라워 백'
+      }
+    ];
+
+    const QUIZ_QUESTIONS = [
+      {
+        question: '주말 데이트, 어떤 옷을 고르시나요?',
+        options: [
+          { text: '깔끔한 셔츠와 슬랙스, 단정하게', moods: ['minimal', 'classic'] },
+          { text: '화려한 패턴의 원피스로 시선을 끌고 싶어요', moods: ['bold', 'edgy'] },
+          { text: '편한 니트에 데님, 꾸안꾸 스타일', moods: ['minimal', 'modern'] },
+          { text: '블랙 톤으로 시크하게 맞춰요', moods: ['edgy', 'modern'] }
+        ]
+      },
+      {
+        question: '가장 끌리는 공간의 분위기는?',
+        options: [
+          { text: '오래된 유럽 도시의 고풍스러운 골목', moods: ['classic', 'bold'] },
+          { text: '미술관처럼 여백이 많은 화이트 큐브', moods: ['minimal', 'modern'] },
+          { text: '빈티지 소품이 가득한 빛바랜 다락방', moods: ['edgy', 'bold'] },
+          { text: '미니멀한 호텔 로비, 깔끔하고 차분한', moods: ['minimal', 'classic'] }
+        ]
+      },
+      {
+        question: '가방을 고를 때 가장 중요한 기준은?',
+        options: [
+          { text: '시대가 지나도 변하지 않는 클래식함', moods: ['classic'] },
+          { text: '로고 없이도 알아보는 디테일과 텍스처', moods: ['minimal'] },
+          { text: '한눈에 시선을 끄는 과감한 디자인', moods: ['bold', 'edgy'] },
+          { text: '실용적이면서도 트렌디한 감각', moods: ['modern'] }
+        ]
+      },
+      {
+        question: '평소 본인의 패션 철학에 가까운 말은?',
+        options: [
+          { text: '적을수록 더 아름답다', moods: ['minimal'] },
+          { text: '패션은 입는 예술이다', moods: ['edgy', 'bold'] },
+          { text: '우아함은 절대 유행을 타지 않는다', moods: ['classic'] },
+          { text: '규칙은 깨지기 위해 존재한다', moods: ['edgy', 'modern'] }
+        ]
+      }
+    ];
+
+    let currentMode = 'quiz';
+    let quizIndex = 0;
+    let moodScores = { classic: 0, modern: 0, bold: 0, minimal: 0, edgy: 0 };
+
+    const MOOD_LABELS = {
+      classic: '클래식', modern: '모던', bold: '화려함', minimal: '미니멀', edgy: '아방가르드'
+    };
+
+    const quizView = document.getElementById('quizView');
+    const resultView = document.getElementById('resultView');
+    const browseView = document.getElementById('browseView');
+    const quizProgress = document.getElementById('quizProgress');
+    const quizCard = document.getElementById('quizCard');
+    const browseGrid = document.getElementById('browseGrid');
+    const detailOverlay = document.getElementById('detailOverlay');
+    const detailCard = document.getElementById('detailCard');
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+      if (mode === 'quiz') {
+        quizView.style.display = 'block';
+        resultView.style.display = 'none';
+        browseView.style.display = 'none';
+      } else {
+        quizView.style.display = 'none';
+        resultView.style.display = 'none';
+        browseView.style.display = 'block';
+        renderBrowse();
+      }
+    }
+
+    function renderQuiz() {
+      quizProgress.innerHTML = QUIZ_QUESTIONS.map((_, i) => {
+        const cls = i < quizIndex ? 'done' : (i === quizIndex ? 'current' : '');
+        return `<div class="quiz-dot ${cls}"></div>`;
+      }).join('');
+
+      const q = QUIZ_QUESTIONS[quizIndex];
+      quizCard.innerHTML = `
+        <div class="quiz-question">${q.question}</div>
+        <div class="quiz-options">
+          ${q.options.map((opt, i) => `<div class="quiz-option" data-opt="${i}">${opt.text}</div>`).join('')}
+        </div>
+      `;
+    }
+
+    function answerQuiz(optIndex) {
+      const q = QUIZ_QUESTIONS[quizIndex];
+      const selected = q.options[optIndex];
+      selected.moods.forEach(m => moodScores[m] += 1);
+
+      quizIndex++;
+      if (quizIndex < QUIZ_QUESTIONS.length) {
+        renderQuiz();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      quizView.style.display = 'none';
+
+      const topMood = Object.entries(moodScores).sort((a, b) => b[1] - a[1])[0][0];
+      const matched = BRANDS.filter(b => b.moods.includes(topMood));
+      const pick = matched.length > 0
+        ? matched[Math.floor(Math.random() * matched.length)]
+        : BRANDS[Math.floor(Math.random() * BRANDS.length)];
+
+      resultView.innerHTML = `
+        <div class="result-card">
+          <div class="result-label">당신의 스타일은 ${MOOD_LABELS[topMood]}</div>
+          <div class="result-brand">${pick.kr}</div>
+          <div class="result-tagline">${pick.tagline}</div>
+          <div class="result-colors">
+            ${pick.colors.map(c => `<div class="color-swatch" style="background:${c}"></div>`).join('')}
+          </div>
+          <div class="result-section">
+            <h4>헤리티지</h4>
+            <p>${pick.heritage}</p>
+          </div>
+          <div class="result-section">
+            <h4>디자인 철학</h4>
+            <p>${pick.philosophy}</p>
+          </div>
+          <div class="result-section">
+            <h4>시그니처 아이템</h4>
+            <p>${pick.signature}</p>
+          </div>
+          <button class="retry-btn" id="retryBtn">다시 진단하기</button>
+        </div>
+      `;
+      resultView.style.display = 'block';
+    }
+
+    function resetQuiz() {
+      quizIndex = 0;
+      moodScores = { classic: 0, modern: 0, bold: 0, minimal: 0, edgy: 0 };
+      resultView.style.display = 'none';
+      quizView.style.display = 'block';
+      renderQuiz();
+    }
+
+    function renderBrowse() {
+      browseGrid.innerHTML = BRANDS.map((b, i) => `
+        <div class="brand-card" data-brand="${i}">
+          <div class="brand-name">${b.kr}</div>
+          <div class="brand-mood">${b.moods.map(m => MOOD_LABELS[m]).join(' · ')}</div>
+          <div class="brand-colors">
+            ${b.colors.map(c => `<div class="mini-swatch" style="background:${c}"></div>`).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openDetail(brandIdx) {
+      const b = BRANDS[brandIdx];
+      detailCard.innerHTML = `
+        <button class="detail-close" id="detailCloseBtn">×</button>
+        <div class="result-label">${b.name}</div>
+        <div class="result-brand">${b.kr}</div>
+        <div class="result-tagline">${b.tagline}</div>
+        <div class="result-colors">
+          ${b.colors.map(c => `<div class="color-swatch" style="background:${c}"></div>`).join('')}
+        </div>
+        <div class="result-section">
+          <h4>헤리티지</h4>
+          <p>${b.heritage}</p>
+        </div>
+        <div class="result-section">
+          <h4>디자인 철학</h4>
+          <p>${b.philosophy}</p>
+        </div>
+        <div class="result-section">
+          <h4>시그니처 아이템</h4>
+          <p>${b.signature}</p>
+        </div>
+      `;
+      detailOverlay.classList.add('open');
+    }
+
+    function closeDetail() {
+      detailOverlay.classList.remove('open');
+    }
+
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchMode(btn.dataset.mode));
+    });
+
+    quizCard.addEventListener('click', (e) => {
+      const opt = e.target.closest('[data-opt]');
+      if (opt) answerQuiz(Number(opt.dataset.opt));
+    });
+
+    resultView.addEventListener('click', (e) => {
+      if (e.target.id === 'retryBtn') resetQuiz();
+    });
+
+    browseGrid.addEventListener('click', (e) => {
+      const card = e.target.closest('[data-brand]');
+      if (card) openDetail(Number(card.dataset.brand));
+    });
+
+    detailOverlay.addEventListener('click', (e) => {
+      if (e.target === detailOverlay || e.target.id === 'detailCloseBtn') closeDetail();
+    });
+
+    renderQuiz();
+  </script>
+</body>
+</html>
