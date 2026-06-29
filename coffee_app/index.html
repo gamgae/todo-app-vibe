@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COFFEE PICK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --surface2: #242424;
+      --accent: #4f8ef7;
+      --accent-dim: #3a72d4;
+      --text: #f0f0f0;
+      --text-muted: #666;
+      --radius: 12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 60px 16px 100px;
+    }
+
+    .container { width: 100%; max-width: 460px; text-align: center; }
+
+    .header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 56px;
+      letter-spacing: 3px;
+      color: var(--accent);
+    }
+    .header .subtitle { font-size: 13px; color: var(--text-muted); margin-top: 6px; margin-bottom: 28px; }
+
+    /* ── 모드 전환 탭 ── */
+    .mode-row { display: flex; justify-content: center; gap: 6px; margin: 28px 0; flex-wrap: wrap; }
+    .mode-btn {
+      background: transparent;
+      border: 1.5px solid var(--surface2);
+      border-radius: 99px;
+      padding: 7px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .mode-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.12); }
+
+    /* ── 멤버 입력 ── */
+    .member-section { margin-bottom: 28px; }
+    .member-input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+    .member-input-row input {
+      flex: 1;
+      background: var(--surface);
+      border: 1.5px solid var(--surface2);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+    }
+    .member-input-row input:focus { border-color: var(--accent); }
+    .member-input-row button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .member-input-row button:hover { background: var(--accent-dim); }
+
+    .member-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .chip {
+      background: var(--surface);
+      border: 1.5px solid var(--surface2);
+      border-radius: 99px;
+      padding: 6px 14px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chip button {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      padding: 0;
+    }
+    .chip button:hover { color: #ff5a5a; }
+
+    /* ── 단순 뽑기 화면 ── */
+    .simple-result {
+      background: var(--surface);
+      border: 1.5px solid var(--surface2);
+      border-radius: var(--radius);
+      padding: 48px 20px;
+      margin-bottom: 24px;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .simple-result .placeholder { color: var(--text-muted); font-size: 14px; }
+    .simple-result .winner-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 2px;
+      color: var(--accent);
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+    .simple-result.shaking .winner-name { animation: shake 0.15s linear infinite; }
+
+    /* ── 룰렛 휠 ── */
+    .wheel-wrap {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      margin: 0 auto 24px;
+    }
+    .wheel-wrap svg { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.15, 0.85, 0.25, 1); }
+    .wheel-pointer {
+      position: absolute;
+      top: -6px; left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-top: 20px solid var(--accent);
+      z-index: 2;
+    }
+
+    .draw-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: 16px 40px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .draw-btn:active { transform: scale(0.96); }
+    .draw-btn:hover { background: var(--accent-dim); }
+    .draw-btn:disabled { background: var(--surface2); color: var(--text-muted); cursor: not-allowed; }
+
+    /* ── 사다리타기 ── */
+    .ladder-wrap {
+      background: var(--surface);
+      border: 1.5px solid var(--surface2);
+      border-radius: var(--radius);
+      padding: 20px 10px;
+      margin-bottom: 24px;
+    }
+    .ladder-names-top, .ladder-names-bottom {
+      position: relative;
+      height: 18px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .ladder-names-bottom { margin-top: 6px; margin-bottom: 0; }
+    .ladder-names-top span, .ladder-names-bottom span {
+      position: absolute;
+      top: 0;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    .ladder-svg-wrap { width: 100%; }
+    .ladder-path-trace {
+      stroke: var(--accent);
+      stroke-width: 3;
+      fill: none;
+      stroke-linecap: round;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .ladder-path-trace.visible { opacity: 1; }
+    .ladder-ball {
+      fill: var(--accent);
+      filter: drop-shadow(0 0 4px rgba(79,142,247,0.6));
+      transition: opacity 0.3s;
+    }
+    .winner-label { color: var(--accent); font-weight: 500; }
+    .ladder-ball-label {
+      font-size: 11px;
+      font-family: 'DM Sans', sans-serif;
+      transition: opacity 0.3s;
+    }
+
+    /* ── 사다리 편집 버튼 (섞기/추가/빼기) ── */
+    .ladder-edit-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 16px; }
+    .icon-btn {
+      background: var(--surface);
+      border: 1.5px solid var(--surface2);
+      border-radius: 10px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .icon-btn:active { transform: scale(0.92); }
+    .icon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .icon-btn:disabled:hover { border-color: var(--surface2); color: var(--text-muted); }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 32px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <h1>COFFEE PICK</h1>
+      <p class="subtitle">금요일 커피 사는 사람, 랜덤으로 뽑기</p>
+    </div>
+
+    <!-- 멤버 입력 -->
+    <div class="member-section">
+      <div class="member-input-row">
+        <input type="text" id="memberInput" placeholder="이름을 입력하세요...">
+        <button id="addMemberBtn">+</button>
+      </div>
+      <div class="member-chips" id="memberChips"></div>
+    </div>
+
+    <!-- 추첨 방식 탭 -->
+    <div class="mode-row">
+      <button class="mode-btn active" data-mode="simple">단순 뽑기</button>
+      <button class="mode-btn" data-mode="wheel">룰렛 휠</button>
+      <button class="mode-btn" data-mode="ladder">사다리타기</button>
+    </div>
+
+    <!-- 단순 뽑기 화면 -->
+    <div id="simpleView">
+      <div class="simple-result" id="simpleResult">
+        <span class="placeholder">멤버를 추가하고 뽑기 버튼을 눌러보세요</span>
+      </div>
+      <button class="draw-btn" id="simpleDrawBtn">뽑기</button>
+    </div>
+
+    <!-- 룰렛 휠 화면 -->
+    <div id="wheelView" style="display:none;">
+      <div class="wheel-wrap">
+        <div class="wheel-pointer"></div>
+        <svg id="wheelSvg" viewBox="0 0 280 280"></svg>
+      </div>
+      <button class="draw-btn" id="wheelDrawBtn">돌리기</button>
+    </div>
+
+    <!-- 사다리타기 화면 -->
+    <div id="ladderView" style="display:none;">
+      <div class="ladder-wrap">
+        <div class="ladder-names-top" id="ladderNamesTop"></div>
+        <div class="ladder-svg-wrap">
+          <svg id="ladderSvg" viewBox="0 0 280 200"></svg>
+        </div>
+        <div class="ladder-names-bottom" id="ladderNamesBottom"></div>
+      </div>
+      <div class="ladder-edit-row">
+        <button class="icon-btn" id="ladderShuffleBtn" title="다시 섞기">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="17 1 21 5 17 9"></polyline>
+            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+            <polyline points="7 23 3 19 7 15"></polyline>
+            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+          </svg>
+        </button>
+        <button class="icon-btn" id="ladderAddBtn" title="가로줄 추가">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        <button class="icon-btn" id="ladderRemoveBtn" title="가로줄 빼기">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+      <button class="draw-btn" id="ladderDrawBtn">시작하기</button>
+    </div>
+
+    <a href="../" class="back-link">← 앱 목록으로 돌아가기</a>
+  </div>
+
+  <script>
+    /* ════════════════════════════════
+       1. 상태 관리
+       ════════════════════════════════ */
+    let members = [];
+    let currentMode = 'simple';
+    let isDrawing = false;
+    let wheelRotation = 0; // 누적 회전각 (계속 더해줘야 자연스럽게 돔)
+
+    const COLORS = ['#4f8ef7', '#5dcaa5', '#f0997b', '#d4537e', '#faab2a', '#7f77dd'];
+
+    /* ════════════════════════════════
+       2. DOM 참조
+       ════════════════════════════════ */
+    const memberInput = document.getElementById('memberInput');
+    const addMemberBtn = document.getElementById('addMemberBtn');
+    const memberChips = document.getElementById('memberChips');
+    const simpleView = document.getElementById('simpleView');
+    const wheelView = document.getElementById('wheelView');
+    const ladderView = document.getElementById('ladderView');
+    const simpleResult = document.getElementById('simpleResult');
+    const simpleDrawBtn = document.getElementById('simpleDrawBtn');
+    const wheelSvg = document.getElementById('wheelSvg');
+    const wheelDrawBtn = document.getElementById('wheelDrawBtn');
+    const ladderNamesTop = document.getElementById('ladderNamesTop');
+    const ladderNamesBottom = document.getElementById('ladderNamesBottom');
+    const ladderSvg = document.getElementById('ladderSvg');
+    const ladderDrawBtn = document.getElementById('ladderDrawBtn');
+    const ladderShuffleBtn = document.getElementById('ladderShuffleBtn');
+    const ladderAddBtn = document.getElementById('ladderAddBtn');
+    const ladderRemoveBtn = document.getElementById('ladderRemoveBtn');
+
+    /* ════════════════════════════════
+       3. 멤버 관리
+       ════════════════════════════════ */
+    function addMember() {
+      const name = memberInput.value.trim();
+      if (!name) return;
+      members.push(name);
+      memberInput.value = '';
+      renderMemberChips();
+      renderWheel();
+      renderLadder();
+    }
+
+    function removeMember(idx) {
+      members.splice(idx, 1);
+      renderMemberChips();
+      renderWheel();
+      renderLadder();
+    }
+
+    function renderMemberChips() {
+      memberChips.innerHTML = members.map((name, idx) => `
+        <span class="chip">
+          ${name}
+          <button data-remove="${idx}">×</button>
+        </span>
+      `).join('');
+    }
+
+    /* ════════════════════════════════
+       4. 모드 전환
+       ════════════════════════════════ */
+    function switchMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+      simpleView.style.display = mode === 'simple' ? 'block' : 'none';
+      wheelView.style.display = mode === 'wheel' ? 'block' : 'none';
+      ladderView.style.display = mode === 'ladder' ? 'block' : 'none';
+      if (mode === 'ladder') renderLadder();
+    }
+
+    /* ════════════════════════════════
+       5. 단순 뽑기 로직
+       ════════════════════════════════ */
+    function drawSimple() {
+      if (members.length === 0 || isDrawing) return;
+      isDrawing = true;
+      simpleDrawBtn.disabled = true;
+      simpleResult.classList.add('shaking');
+      simpleResult.innerHTML = `<span class="winner-name">${members[0]}</span>`;
+
+      // 0.05초마다 이름을 빠르게 바꿔서 "두근두근" 느낌 주기
+      let shuffleCount = 0;
+      const shuffleId = setInterval(() => {
+        const randomName = members[Math.floor(Math.random() * members.length)];
+        simpleResult.querySelector('.winner-name').textContent = randomName;
+        shuffleCount++;
+        if (shuffleCount > 15) {
+          clearInterval(shuffleId);
+          // 최종 결과 확정
+          const winner = members[Math.floor(Math.random() * members.length)];
+          simpleResult.classList.remove('shaking');
+          simpleResult.querySelector('.winner-name').textContent = winner;
+          simpleDrawBtn.disabled = false;
+          isDrawing = false;
+        }
+      }, 80);
+    }
+
+    /* ════════════════════════════════
+       6. 룰렛 휠 로직
+       ════════════════════════════════ */
+
+    // 멤버 수에 맞춰 휠을 SVG 부채꼴(파이) 조각으로 그림
+    function renderWheel() {
+      const n = members.length;
+      if (n === 0) {
+        wheelSvg.innerHTML = `<circle cx="140" cy="140" r="125" fill="#1a1a1a" stroke="#242424" stroke-width="2"/>
+          <text x="140" y="140" text-anchor="middle" dominant-baseline="central" fill="#666" font-size="13">멤버를 추가하세요</text>`;
+        return;
+      }
+
+      const cx = 140, cy = 140, r = 125;
+      const anglePer = 360 / n;
+      let svgParts = '';
+
+      members.forEach((name, idx) => {
+        const startAngle = idx * anglePer;
+        const endAngle = startAngle + anglePer;
+        const color = COLORS[idx % COLORS.length];
+
+        // 부채꼴 좌표 계산 (각도를 라디안으로 변환)
+        const startRad = (startAngle - 90) * Math.PI / 180;
+        const endRad = (endAngle - 90) * Math.PI / 180;
+        const x1 = cx + r * Math.cos(startRad);
+        const y1 = cy + r * Math.sin(startRad);
+        const x2 = cx + r * Math.cos(endRad);
+        const y2 = cy + r * Math.sin(endRad);
+        const largeArc = anglePer > 180 ? 1 : 0;
+
+        svgParts += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArc} 1 ${x2},${y2} Z" fill="${color}" opacity="0.85"/>`;
+
+        // 이름 텍스트를 부채꼴 중앙에 배치
+        const midRad = (startAngle + anglePer / 2 - 90) * Math.PI / 180;
+        const tx = cx + (r * 0.62) * Math.cos(midRad);
+        const ty = cy + (r * 0.62) * Math.sin(midRad);
+        svgParts += `<text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="14" font-weight="500">${name}</text>`;
+      });
+
+      wheelSvg.innerHTML = svgParts;
+    }
+
+    function spinWheel() {
+      const n = members.length;
+      if (n === 0 || isDrawing) return;
+      isDrawing = true;
+      wheelDrawBtn.disabled = true;
+
+      const anglePer = 360 / n;
+      const winnerIdx = Math.floor(Math.random() * n);
+
+      // 당첨 조각의 중앙이 포인터(0도, 즉 위쪽)에 오도록 회전각 계산
+      const targetAngleInWheel = winnerIdx * anglePer + anglePer / 2;
+      // 여러 바퀴(5바퀴) 돌고 나서 정확히 멈추도록
+      const extraSpins = 5 * 360;
+      const finalRotation = wheelRotation + extraSpins + (360 - targetAngleInWheel) - (wheelRotation % 360);
+
+      wheelRotation = finalRotation;
+      wheelSvg.style.transform = `rotate(${wheelRotation}deg)`;
+
+      setTimeout(() => {
+        isDrawing = false;
+        wheelDrawBtn.disabled = false;
+        alert(`오늘의 커피 당첨: ${members[winnerIdx]} ☕`);
+      }, 4100);
+    }
+
+    /* ════════════════════════════════
+       7. 사다리타기 로직
+       ════════════════════════════════ */
+    let ladderConnections = [];
+    let ladderCols = [];        // 세로줄 x좌표들
+    let ladderWinnerSlot = 0;   // 당첨인 도착 칸 인덱스 (0 ~ n-1 중 1곳)
+    const LADDER_WIDTH = 280, LADDER_HEIGHT = 200;
+    const RUNG_ROW_COUNT = 6; // 가로줄이 들어갈 수 있는 "행" 개수 (격자선)
+
+    // 멤버가 바뀌었을 때만 호출: 세로줄/이름 새로 세팅 + 가로줄 랜덤 생성 + 당첨 칸 랜덤 지정
+    function renderLadder() {
+      const n = members.length;
+      ladderNamesTop.innerHTML = '';
+      ladderNamesBottom.innerHTML = '';
+      ladderSvg.innerHTML = '';
+
+      if (n < 2) {
+        ladderSvg.innerHTML = `<text x="140" y="100" text-anchor="middle" fill="#666" font-size="13">멤버 2명 이상 필요해요</text>`;
+        ladderConnections = [];
+        updateLadderEditButtons();
+        return;
+      }
+
+      const colGap = LADDER_WIDTH / (n + 1);
+      ladderCols = Array.from({length: n}, (_, i) => colGap * (i + 1));
+      ladderWinnerSlot = Math.floor(Math.random() * n); // 도착 칸 중 1곳을 당첨으로 지정
+
+      // 위쪽: 멤버 이름 / 아래쪽: 당첨(☕) 또는 패스 라벨
+      ladderNamesTop.innerHTML = members.map((name, i) =>
+        `<span style="left:${(ladderCols[i] / LADDER_WIDTH) * 100}%">${name}</span>`
+      ).join('');
+      ladderNamesBottom.innerHTML = members.map((name, i) => {
+        const isWinner = i === ladderWinnerSlot;
+        return `<span class="${isWinner ? 'winner-label' : ''}" style="left:${(ladderCols[i] / LADDER_WIDTH) * 100}%">${isWinner ? '당첨 ☕' : '패스'}</span>`;
+      }).join('');
+
+      ladderConnections = generateRandomConnections();
+      drawLadderSvg();
+    }
+
+    // 0~RUNG_ROW_COUNT 행, 0~n-2 칸 사이에서 랜덤하게 가로줄들을 생성 (겹침 없이)
+    function generateRandomConnections() {
+      const n = members.length;
+      const connections = [];
+      for (let row = 1; row <= RUNG_ROW_COUNT; row++) {
+        const y = (LADDER_HEIGHT - 20) * (row / (RUNG_ROW_COUNT + 1)) + 10;
+        let usedColsInThisRow = new Set();
+
+        for (let i = 0; i < n - 1; i++) {
+          if (usedColsInThisRow.has(i) || usedColsInThisRow.has(i + 1)) continue;
+
+          if (Math.random() < 0.45) {
+            const tooClose = connections.some(c => c.col === i && Math.abs(c.y - y) < 25);
+            if (tooClose) continue;
+
+            connections.push({ col: i, y, row });
+            usedColsInThisRow.add(i);
+            usedColsInThisRow.add(i + 1);
+          }
+        }
+      }
+      return connections;
+    }
+
+    // 현재 ladderConnections 상태 그대로 SVG에 그리기만 함 (가로줄 추가/빼기 후에도 재사용)
+    function drawLadderSvg() {
+      const n = members.length;
+      let svgParts = ladderCols.map(x =>
+        `<line x1="${x}" y1="10" x2="${x}" y2="${LADDER_HEIGHT-10}" stroke="#333" stroke-width="2"/>`
+      ).join('');
+
+      ladderConnections.forEach(conn => {
+        svgParts += `<line x1="${ladderCols[conn.col]}" y1="${conn.y}" x2="${ladderCols[conn.col+1]}" y2="${conn.y}" stroke="#333" stroke-width="2"/>`;
+      });
+
+      ladderSvg.setAttribute('viewBox', `0 0 ${LADDER_WIDTH} ${LADDER_HEIGHT}`);
+      ladderSvg.innerHTML = svgParts;
+      ladderSvg.dataset.cols = JSON.stringify(ladderCols);
+      updateLadderEditButtons();
+    }
+
+    // 가로줄을 더 추가할 빈 자리가 있는지/뺄 가로줄이 있는지에 따라 버튼 활성/비활성
+    function updateLadderEditButtons() {
+      const n = members.length;
+      const maxPossible = RUNG_ROW_COUNT * (n - 1); // 이론상 최대 칸 수 (대략적인 상한)
+      ladderAddBtn.disabled = n < 2 || ladderConnections.length >= maxPossible;
+      ladderRemoveBtn.disabled = n < 2 || ladderConnections.length === 0;
+      ladderShuffleBtn.disabled = n < 2;
+    }
+
+    // 섞기: 가로줄 개수/위치를 완전히 새로 랜덤 생성
+    function shuffleLadder() {
+      if (members.length < 2) return;
+      ladderConnections = generateRandomConnections();
+      drawLadderSvg();
+    }
+
+    // 추가하기: 비어있는 (row, col) 자리 중 하나를 랜덤으로 골라 가로줄 추가
+    function addLadderRung() {
+      const n = members.length;
+      if (n < 2) return;
+
+      // 현재 비어있는 자리 후보 찾기
+      const emptySlots = [];
+      for (let row = 1; row <= RUNG_ROW_COUNT; row++) {
+        const y = (LADDER_HEIGHT - 20) * (row / (RUNG_ROW_COUNT + 1)) + 10;
+        for (let col = 0; col < n - 1; col++) {
+          // 같은 row에 인접 칸이 이미 있으면 안되고, 같은 칸에 위아래로 너무 가까운 줄도 안됨
+          const sameRowConflict = ladderConnections.some(c => c.row === row && (c.col === col - 1 || c.col === col || c.col === col + 1));
+          const closeYConflict = ladderConnections.some(c => c.col === col && Math.abs(c.y - y) < 25);
+          if (!sameRowConflict && !closeYConflict) {
+            emptySlots.push({ col, y, row });
+          }
+        }
+      }
+
+      if (emptySlots.length === 0) return; // 더 추가할 자리가 없음
+      const picked = emptySlots[Math.floor(Math.random() * emptySlots.length)];
+      ladderConnections.push(picked);
+      drawLadderSvg();
+    }
+
+    // 빼기: 현재 있는 가로줄 중 하나를 랜덤으로 골라 제거
+    function removeLadderRung() {
+      if (ladderConnections.length === 0) return;
+      const idx = Math.floor(Math.random() * ladderConnections.length);
+      ladderConnections.splice(idx, 1);
+      drawLadderSvg();
+    }
+
+    // 특정 칸(startCol)에서 출발했을 때 가로줄을 따라가며 최종 도착 칸을 계산
+    function traceLadderPath(startCol) {
+      let currentCol = startCol;
+      let pathPoints = [{x: ladderCols[currentCol], y: 10}];
+      const sortedConnections = [...ladderConnections].sort((a, b) => a.y - b.y);
+
+      sortedConnections.forEach(conn => {
+        if (conn.col === currentCol) {
+          pathPoints.push({x: ladderCols[currentCol], y: conn.y});
+          currentCol = currentCol + 1;
+          pathPoints.push({x: ladderCols[currentCol], y: conn.y});
+        } else if (conn.col === currentCol - 1) {
+          pathPoints.push({x: ladderCols[currentCol], y: conn.y});
+          currentCol = currentCol - 1;
+          pathPoints.push({x: ladderCols[currentCol], y: conn.y});
+        }
+      });
+      pathPoints.push({x: ladderCols[currentCol], y: 190});
+
+      return { endCol: currentCol, pathPoints };
+    }
+
+    const LADDER_BALL_COLORS = ['#4f8ef7', '#5dcaa5', '#f0997b', '#d4537e', '#faab2a', '#7f77dd'];
+
+    function startLadder() {
+      const n = members.length;
+      if (n < 2 || isDrawing) return;
+      isDrawing = true;
+      ladderDrawBtn.disabled = true;
+      ladderShuffleBtn.disabled = true;
+      ladderAddBtn.disabled = true;
+      ladderRemoveBtn.disabled = true;
+
+      // 기존 trace/ball 전부 제거
+      document.querySelectorAll('.ladder-path-trace, .ladder-ball, .ladder-ball-label').forEach(el => el.remove());
+
+      // 전원(각 멤버)이 자기 칸에서 동시에 출발 -> 각자의 경로와 도착 칸 계산
+      const allPaths = members.map((name, col) => {
+        const { endCol, pathPoints } = traceLadderPath(col);
+        return { name, col, endCol, pathPoints, isWinner: endCol === ladderWinnerSlot };
+      });
+
+      // 각 멤버 색깔의 경로선 + 공 SVG 엘리먼트 미리 생성
+      allPaths.forEach((p, idx) => {
+        const color = LADDER_BALL_COLORS[idx % LADDER_BALL_COLORS.length];
+
+        const traceLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        traceLine.setAttribute('class', 'ladder-path-trace visible');
+        traceLine.setAttribute('stroke', color);
+        traceLine.setAttribute('d', `M${p.pathPoints[0].x},${p.pathPoints[0].y}`);
+        ladderSvg.appendChild(traceLine);
+        p.traceEl = traceLine;
+
+        const ball = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        ball.setAttribute('class', 'ladder-ball');
+        ball.setAttribute('r', '6');
+        ball.setAttribute('fill', color);
+        ball.setAttribute('cx', p.pathPoints[0].x);
+        ball.setAttribute('cy', p.pathPoints[0].y);
+        ladderSvg.appendChild(ball);
+        p.ballEl = ball;
+
+        // 공 위에 이름표(작은 텍스트)를 같이 띄워서 누구 공인지 바로 알 수 있게
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('class', 'ladder-ball-label');
+        label.setAttribute('fill', color);
+        label.setAttribute('text-anchor', 'middle');
+        label.setAttribute('x', p.pathPoints[0].x);
+        label.setAttribute('y', p.pathPoints[0].y - 11);
+        label.textContent = p.name;
+        ladderSvg.appendChild(label);
+        p.labelEl = label;
+
+        // 구간별 길이 미리 계산 (등속 이동용)
+        const segLengths = [];
+        let totalLength = 0;
+        for (let i = 0; i < p.pathPoints.length - 1; i++) {
+          const dx = p.pathPoints[i+1].x - p.pathPoints[i].x;
+          const dy = p.pathPoints[i+1].y - p.pathPoints[i].y;
+          const len = Math.sqrt(dx*dx + dy*dy);
+          segLengths.push(len);
+          totalLength += len;
+        }
+        p.segLengths = segLengths;
+        p.totalLength = totalLength;
+      });
+
+      const duration = 1600; // ms
+      const startTime = performance.now();
+
+      function animateAllBalls(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        allPaths.forEach(p => {
+          const targetDist = progress * p.totalLength;
+          let acc = 0;
+          let currentX, currentY;
+          let traceD = `M${p.pathPoints[0].x},${p.pathPoints[0].y}`;
+
+          for (let i = 0; i < p.segLengths.length; i++) {
+            if (targetDist <= acc + p.segLengths[i] || i === p.segLengths.length - 1) {
+              const segProgress = p.segLengths[i] === 0 ? 0 : Math.min((targetDist - acc) / p.segLengths[i], 1);
+              const p1 = p.pathPoints[i];
+              const p2 = p.pathPoints[i+1];
+              currentX = p1.x + (p2.x - p1.x) * segProgress;
+              currentY = p1.y + (p2.y - p1.y) * segProgress;
+              traceD += ` L${currentX},${currentY}`;
+              break;
+            }
+            traceD += ` L${p.pathPoints[i+1].x},${p.pathPoints[i+1].y}`;
+            acc += p.segLengths[i];
+          }
+
+          p.ballEl.setAttribute('cx', currentX);
+          p.ballEl.setAttribute('cy', currentY);
+          p.traceEl.setAttribute('d', traceD);
+          p.labelEl.setAttribute('x', currentX);
+          p.labelEl.setAttribute('y', currentY - 11);
+        });
+
+        if (progress < 1) {
+          requestAnimationFrame(animateAllBalls);
+        } else {
+          // 도착 후: 당첨자 공/이름만 살짝 크게 키워서 강조, 나머지는 흐리게
+          allPaths.forEach(p => {
+            if (p.isWinner) {
+              p.ballEl.setAttribute('r', '9');
+              p.labelEl.style.fontWeight = '500';
+              p.labelEl.setAttribute('y', p.ballEl.getAttribute('cy') - 13);
+            } else {
+              p.ballEl.style.opacity = '0.35';
+              p.traceEl.style.opacity = '0.25';
+              p.labelEl.style.opacity = '0.35';
+            }
+          });
+        }
+      }
+      requestAnimationFrame(animateAllBalls);
+
+      setTimeout(() => {
+        isDrawing = false;
+        ladderDrawBtn.disabled = false;
+        updateLadderEditButtons();
+        const winner = allPaths.find(p => p.isWinner);
+        alert(`오늘의 커피 당첨: ${winner.name} ☕`);
+      }, duration + 100);
+    }
+
+    /* ════════════════════════════════
+       9. 이벤트 리스너
+       ════════════════════════════════ */
+    addMemberBtn.addEventListener('click', addMember);
+    memberInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.isComposing) addMember();
+    });
+
+    memberChips.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-remove]');
+      if (!btn) return;
+      removeMember(Number(btn.dataset.remove));
+    });
+
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchMode(btn.dataset.mode));
+    });
+
+    simpleDrawBtn.addEventListener('click', drawSimple);
+    wheelDrawBtn.addEventListener('click', spinWheel);
+    ladderDrawBtn.addEventListener('click', startLadder);
+    ladderShuffleBtn.addEventListener('click', shuffleLadder);
+    ladderAddBtn.addEventListener('click', addLadderRung);
+    ladderRemoveBtn.addEventListener('click', removeLadderRung);
+
+    /* ════════════════════════════════
+       10. 초기 실행
+       ════════════════════════════════ */
+    renderWheel();
+    renderLadder();
+  </script>
+</body>
+</html>
