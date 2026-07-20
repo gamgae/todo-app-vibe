@@ -4,6 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LUXE MATCH</title>
+  <meta name="description" content="13개의 질문으로 찾는 나와 가장 가까운 럭셔리 브랜드. 26개 메종 중에서.">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LUXE MATCH">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:url" content="https://gamgae.github.io/todo-app-vibe/luxe_match_app/">
+  <meta property="og:title" content="LUXE MATCH — 나와 가장 가까운 브랜드는?">
+  <meta property="og:description" content="13개의 질문으로 찾는 나의 럭셔리 브랜드. 26개 메종 중에서.">
+  <meta property="og:image" content="https://gamgae.github.io/todo-app-vibe/luxe_match_app/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="LUXE MATCH">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LUXE MATCH — 나와 가장 가까운 브랜드는?">
+  <meta name="twitter:description" content="13개의 질문으로 찾는 나의 럭셔리 브랜드. 26개 메종 중에서.">
+  <meta name="twitter:image" content="https://gamgae.github.io/todo-app-vibe/luxe_match_app/og-image.png">
+
+  <link rel="canonical" href="https://gamgae.github.io/todo-app-vibe/luxe_match_app/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -109,16 +130,19 @@
       text-align: left;
       margin-top: -1px;
     }
+    .quiz-note { font-size: 12px; color: var(--text-muted); font-weight: 300; margin: -14px 0 22px; font-style: italic; font-family: 'Cormorant Garamond', serif; }
+    .opt-swatch { width: 14px; height: 14px; display: inline-block; border: 1px solid var(--line); margin-right: 11px; vertical-align: -2px; }
+    .runner-ups { font-family: 'Cormorant Garamond', serif; font-size: 15px; letter-spacing: 1px; line-height: 2; }
     .quiz-option:hover { background: var(--bg); border-color: var(--text); position: relative; z-index: 1; }
 
     .result-card {
       background: var(--surface);
-      border: 1px solid var(--text);
-      padding: 56px 44px;
-      text-align: center;
+      border: 1px solid var(--line);
+      padding: 44px 40px;
+      text-align: left;
     }
     .result-label {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-muted);
       letter-spacing: 3px;
       text-transform: uppercase;
@@ -148,8 +172,60 @@
       font-weight: 400;
     }
     .result-section p { font-size: 14px; line-height: 1.75; color: var(--text); font-weight: 300; }
+    .brand-caption {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 400;
+      margin-bottom: 12px;
+    }
+    .brand-latin {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--text);
+      margin: 4px 0 14px;
+    }
+    .brand-kr {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      font-weight: 300;
+      margin-bottom: 18px;
+    }
+    .accent-chip {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-muted);
+    }
+    .accent-chip i { width: 12px; height: 12px; display: inline-block; background: var(--accent-c); }
+    .brand-card .brand-latin { font-size: 19px; letter-spacing: 2.5px; margin: 2px 0 8px; }
+    .brand-card .brand-kr { font-size: 11px; letter-spacing: 1px; margin-bottom: 12px; }
+    .accent-top { border-top: 3px solid var(--accent-c); }
     .result-colors { display: flex; gap: 10px; margin-top: 8px; justify-content: center; }
     .color-swatch { width: 20px; height: 20px; border: 1px solid var(--line); }
+    .result-actions { display: flex; align-items: center; gap: 22px; margin-top: 32px; }
+    .share-btn {
+      background: transparent;
+      border: 1px solid var(--text);
+      padding: 11px 22px;
+      font-family: inherit;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .share-btn:hover { background: var(--text); color: var(--bg); }
+    .share-btn:disabled { opacity: 0.55; cursor: default; }
+    .share-btn:focus-visible, .retry-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
     .retry-btn {
       margin-top: 32px;
       background: transparent;
@@ -173,6 +249,7 @@
     }
     .brand-card:hover { background: var(--bg); }
     .brand-card .brand-name { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; margin-bottom: 6px; }
+    .brand-card .brand-caption { font-size: 9px; letter-spacing: 2px; margin-bottom: 8px; }
     .brand-card .brand-mood { font-size: 10px; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase; }
     .brand-card .brand-colors { display: flex; gap: 5px; margin-top: 14px; }
     .brand-card .mini-swatch { width: 11px; height: 11px; border: 1px solid var(--line); }
@@ -259,7 +336,7 @@
   <script>
     const BRANDS = [
       {
-        name: 'Chanel', kr: '샤넬',
+        name: 'Chanel', axes: { logo: 1, craft: 2, time: -2, tone: -1, daily: -1, structure: 1 }, accentName: 'Chanel black', accent: '#000000', city: 'Paris', year: 1910, category: 'Maison', kr: '샤넬',
         tagline: '시대를 초월한 파리지엔의 우아함',
         heritage: '1910년 코코 샤넬이 모자 부티크로 시작, 여성을 코르셋에서 해방시킨 혁신적 디자인으로 패션사를 바꾼 브랜드.',
         philosophy: '단순함 속의 사치. 불필요한 장식을 걷어내고 실루엣과 소재로 우아함을 완성하는 미니멀 럭셔리.',
@@ -268,7 +345,7 @@
         signature: '클래식 플랩백, 트위드 재킷, 투톤 슬링백'
       },
       {
-        name: 'Hermès', kr: '에르메스',
+        name: 'Hermès', axes: { logo: -2, craft: -2, time: -2, tone: 0, daily: 0, structure: 1 }, accentName: 'Signature orange', accent: '#F37021', city: 'Paris', year: 1837, category: 'Maison', kr: '에르메스',
         tagline: '장인정신이 빚어낸 침묵의 우아함',
         heritage: '1837년 마구(馬具) 공방으로 시작, 가죽 공예의 정점을 보여주는 가족 경영 브랜드로 성장.',
         philosophy: '눈에 띄지 않아도 모두가 아는 가치. 로고보다 소재와 마감의 완벽함을 우선하는 조용한 럭셔리.',
@@ -277,7 +354,7 @@
         signature: '버킨백, 켈리백, 실크 스카프'
       },
       {
-        name: 'Dior', kr: '디올',
+        name: 'Dior', axes: { logo: 1, craft: 2, time: -1, tone: -1, daily: -2, structure: 2 }, accentName: 'Dior gold', accent: '#C0A062', city: 'Paris', year: 1947, category: 'Couture', kr: '디올',
         tagline: '여성스러움의 황금기를 되살린 쿠튀르',
         heritage: '1947년 크리스챤 디올의 뉴 룩으로 2차대전 후 패션의 부활을 알린 브랜드.',
         philosophy: '극적인 실루엣과 로맨틱한 디테일. 꽃처럼 피어나는 여성성을 정교한 구조로 표현.',
@@ -286,7 +363,7 @@
         signature: '레이디 디올, 새들백, 바 재킷'
       },
       {
-        name: 'Louis Vuitton', kr: '루이비통',
+        name: 'Louis Vuitton', axes: { logo: 2, craft: -1, time: -1, tone: 0, daily: 1, structure: 1 }, accentName: 'Monogram brown', accent: '#5A3A22', city: 'Paris', year: 1854, category: 'Malletier', kr: '루이비통',
         tagline: '여행과 모험을 위한 견고한 우아함',
         heritage: '1854년 견고한 트렁크 제작자로 출발, 모노그램 캔버스로 전 세계가 알아보는 아이콘이 됨.',
         philosophy: '실용성과 화려함의 결합. 모노그램이라는 강력한 시각 언어로 정체성을 드러내는 브랜드.',
@@ -295,7 +372,7 @@
         signature: '네버풀, 스피디백, 다미에 캔버스'
       },
       {
-        name: 'Gucci', kr: '구찌',
+        name: 'Gucci', axes: { logo: 2, craft: 1, time: 1, tone: 2, daily: 0, structure: -1 }, accentName: 'Gucci green', accent: '#2E5E3A', city: 'Firenze', year: 1921, category: 'Pelletteria', kr: '구찌',
         tagline: '맥시멀리즘과 위트가 만나는 이탈리안 무드',
         heritage: '1921년 피렌체 가죽 공방으로 출발, 알레산드로 미켈레 시대를 거치며 레트로 맥시멀 미학으로 재탄생.',
         philosophy: '과감한 패턴 믹스, 화려한 색감, 위트 있는 레퍼런스. 정해진 규칙을 깨는 자유로운 럭셔리.',
@@ -304,7 +381,7 @@
         signature: '마몽 백, GG 마몽트, 호스빗 로퍼'
       },
       {
-        name: 'Saint Laurent', kr: '생로랑',
+        name: 'Saint Laurent', axes: { logo: 1, craft: 1, time: 1, tone: -2, daily: -1, structure: 2 }, accentName: 'Rive Gauche black', accent: '#000000', city: 'Paris', year: 1961, category: 'Couture', kr: '생로랑',
         tagline: '록큰롤 정신이 흐르는 파리의 밤',
         heritage: '1961년 이브 생로랑이 설립, 여성에게 턱시도를 입힌 르 스모킹으로 젠더 규범을 깬 브랜드.',
         philosophy: '날카로운 실루엣과 블랙. 섹시함과 반항을 동시에 표현하는 록시크 미학.',
@@ -313,7 +390,7 @@
         signature: '카산드라 백, 르 스모킹 슈트, 스웨이드 부츠'
       },
       {
-        name: 'Bottega Veneta', kr: '보테가 베네타',
+        name: 'Bottega Veneta', axes: { logo: -2, craft: -2, time: 1, tone: -1, daily: 1, structure: -1 }, accentName: 'Bottega green', accent: '#4A6741', city: 'Vicenza', year: 1966, category: 'Leather', kr: '보테가 베네타',
         tagline: '로고 없이도 알아보는 침묵의 장인정신',
         heritage: '1966년 베네토 지역에서 가죽 인트레치아토(엮기) 기법으로 시작한 이탈리아 가죽 명가.',
         philosophy: '이니셜이 말해줄 때 로고는 필요 없다. 텍스처와 컬러로 존재감을 드러내는 콘템포러리 미니멀리즘.',
@@ -322,7 +399,7 @@
         signature: '카세트백, 인트레치아토 가죽, 파우치'
       },
       {
-        name: 'Celine', kr: '셀린느',
+        name: 'Celine', axes: { logo: -1, craft: 1, time: 0, tone: -2, daily: 1, structure: 1 }, accentName: 'Celine graphite', accent: '#4A4A4A', city: 'Paris', year: 1945, category: 'Maison', kr: '셀린느',
         tagline: '파리의 무심한 듯 완벽한 시크함',
         heritage: '1945년 아동화 브랜드로 시작, 피비 파일로 시대 이후 미니멀 럭셔리의 대표 아이콘이 됨.',
         philosophy: '꾸미지 않은 듯한 완벽함. 깨끗한 라인과 고급 소재로 표현하는 도시적 무심함.',
@@ -331,7 +408,7 @@
         signature: '럭게이지백, 트리옹프 캔버스, 박시 재킷'
       },
       {
-        name: 'Prada', kr: '프라다',
+        name: 'Prada', axes: { logo: 0, craft: 1, time: 2, tone: -1, daily: 1, structure: 1 }, accentName: 'Prada red', accent: '#8B0000', city: 'Milano', year: 1913, category: 'Pelletteria', kr: '프라다',
         tagline: '지적이고 실험적인 안티 패션',
         heritage: '1913년 가죽 제품 브랜드로 시작, 미우치아 프라다가 나일론 소재를 럭셔리로 끌어올린 혁신가.',
         philosophy: '아름다움에 대한 의도적 거부. 어글리 시크로 불리는 지적이고 실험적인 미학.',
@@ -340,7 +417,7 @@
         signature: '갈레리아백, 리나일론 백팩, 사피아노 가죽'
       },
       {
-        name: 'Fendi', kr: '펜디',
+        name: 'Fendi', axes: { logo: 1, craft: -1, time: 1, tone: 2, daily: 0, structure: 0 }, accentName: 'Fendi ochre', accent: '#E8A33D', city: 'Roma', year: 1925, category: 'Furrier', kr: '펜디',
         tagline: '로마의 태양 아래 빛나는 모피 헤리티지',
         heritage: '1925년 로마에서 모피와 가죽 공방으로 출발, 칼 라거펠트와 함께 럭셔리 모피의 새 장을 엶.',
         philosophy: '로마의 따뜻한 색감과 장식적 디테일. 전통 공예와 현대적 위트를 결합한 이탈리안 글래머.',
@@ -349,7 +426,7 @@
         signature: '바게트백, FF 로고, 페카부백'
       },
       {
-        name: 'Balenciaga', kr: '발렌시아가',
+        name: 'Balenciaga', axes: { logo: 2, craft: 2, time: 2, tone: -1, daily: 1, structure: 2 }, accentName: 'Midnight navy', accent: '#1a1a2e', city: 'Paris', year: 1919, category: 'Couture', kr: '발렌시아가',
         tagline: '건축적 실루엣의 미래주의자',
         heritage: '1919년 크리스토발 발렌시아가가 설립, 쿠튀르의 건축가로 불리며 의상 구조를 재정의.',
         philosophy: '과장된 실루엣과 해체적 디자인. 패션의 경계를 실험하는 아방가르드 정신.',
@@ -358,58 +435,276 @@
         signature: '시티백, 트리플S 스니커즈, 르 카곤'
       },
       {
-        name: 'Loewe', kr: '로에베',
+        name: 'Loewe', axes: { logo: -1, craft: -2, time: 2, tone: 1, daily: 0, structure: 0 }, accentName: 'Loewe terracotta', accent: '#D2691E', city: 'Madrid', year: 1846, category: 'Leather', kr: '로에베',
         tagline: '스페인 장인정신과 초현실적 위트',
         heritage: '1846년 스페인 마드리드의 가죽 공방으로 출발, 조나단 앤더슨 체제 이후 예술적 행보로 주목받음.',
         philosophy: '전통 가죽 공예와 초현실주의적 상상력의 결합. 진중함과 유머가 공존하는 독특한 균형.',
         colors: ['#D2691E', '#2F4F2F', '#F5DEB3'],
         moods: ['modern', 'edgy'],
         signature: '퍼즐백, 아나그램 토트, 플라워 백'
+      },
+      {
+        name: 'Maison Margiela', axes: { logo: -2, craft: 2, time: 2, tone: -1, daily: 0, structure: -1 }, accentName: 'Margiela blanc', accent: '#8C877D', city: 'Paris', year: 1988, category: 'Deconstruction', kr: '메종 마르지엘라',
+        tagline: '이름을 지운 자리에 남은 옷',
+        heritage: '1988년 마르탱 마르지엘라가 파리에서 설립. 얼굴을 드러내지 않는 디자이너로 유명했고, 라벨에 이름 대신 숫자만 적는 방식으로 브랜드를 알렸다.',
+        philosophy: '옷을 완성품이 아니라 과정으로 본다. 시접을 밖으로 드러내고 안감을 겉으로 뒤집으며, 만들어지는 방식 자체를 디자인으로 삼는다.',
+        colors: ['#F2F0EB', '#8C877D', '#1a1a1a'],
+        moods: ['edgy', 'minimal'],
+        signature: '네 개의 흰 스티치, 타비 부츠, 5AC 백'
+      },
+      {
+        name: 'The Row', axes: { logo: -2, craft: 2, time: -1, tone: -2, daily: 0, structure: -2 }, accentName: 'Quiet taupe', accent: '#6B6259', city: 'New York', year: 2006, category: 'Ready-to-wear', kr: '더 로우',
+        tagline: '아무 말도 하지 않는 옷의 완성도',
+        heritage: '2006년 뉴욕에서 시작. 브랜드명은 런던 새빌 로우의 맞춤 정장 거리에서 따왔고, 로고 없는 옷으로 조용한 럭셔리라는 말을 대표하게 됐다.',
+        philosophy: '장식도 로고도 없이 소재와 재단만으로 승부한다. 캐시미어와 실크가 몸 위에서 어떻게 떨어지는지가 유일한 디자인 언어.',
+        colors: ['#1a1a1a', '#C9BFB2', '#6B6259'],
+        moods: ['minimal', 'classic'],
+        signature: '마고 백, 오버사이즈 캐시미어 코트'
+      },
+      {
+        name: 'Burberry', axes: { logo: 1, craft: 1, time: -2, tone: 1, daily: 2, structure: 1 }, accentName: 'Trench beige', accent: '#B79A6B', city: 'London', year: 1856, category: 'Outerwear', kr: '버버리',
+        tagline: '비 오는 날을 위해 태어난 영국식 견고함',
+        heritage: '1856년 토마스 버버리가 설립. 통기성 있는 방수 원단 개버딘을 개발해 군용 코트에 쓰였고, 그것이 오늘날의 트렌치코트가 됐다.',
+        philosophy: '날씨와 싸우기 위한 옷에서 출발한 실용주의. 아름다움보다 기능이 먼저였고, 그 기능이 시간이 지나며 스타일이 됐다.',
+        colors: ['#B79A6B', '#1a1a1a', '#A62B2B'],
+        moods: ['classic', 'modern'],
+        signature: '트렌치코트, 체크 스카프, 개버딘 원단'
+      },
+      {
+        name: 'Valentino', axes: { logo: 1, craft: 2, time: 0, tone: 2, daily: -2, structure: 0 }, accentName: 'Rosso Valentino', accent: '#D0103A', city: 'Roma', year: 1960, category: 'Couture', kr: '발렌티노',
+        tagline: '붉은 드레스 한 벌이 만드는 순간',
+        heritage: '1960년 발렌티노 가라바니가 로마에 아틀리에를 열었다. 자신만의 붉은색을 만들어 이름을 붙였고, 그 색은 지금도 브랜드의 서명으로 쓰인다.',
+        philosophy: '옷이 사람을 무대 위에 올린다. 일상보다 특별한 순간을 위해 존재하며, 로마 쿠튀르의 화려함을 숨기지 않는다.',
+        colors: ['#D0103A', '#000000', '#F5E6D3'],
+        moods: ['bold', 'classic'],
+        signature: '락스터드, 발렌티노 레드 드레스'
+      },
+      {
+        name: 'Miu Miu', axes: { logo: 0, craft: 2, time: 2, tone: 1, daily: 0, structure: -1 }, accentName: 'Miu pink', accent: '#D96A8A', city: 'Milano', year: 1993, category: 'Ready-to-wear', kr: '미우미우',
+        tagline: '단정함을 살짝 비틀어 놓은 장난',
+        heritage: '1993년 미우치아 프라다가 자신의 어릴 적 애칭을 붙여 만든 두 번째 브랜드. 프라다보다 가볍고 실험적인 이야기를 담는 자리로 쓰인다.',
+        philosophy: '완벽한 옷차림에 일부러 어긋난 요소를 하나 넣는다. 그 어긋남이 만드는 어색한 매력이 이 브랜드의 언어.',
+        colors: ['#D96A8A', '#F5F0E1', '#4A6741'],
+        moods: ['modern', 'edgy'],
+        signature: '완더 마테라세, 미니 스커트, 크리스털 디테일'
+      },
+      {
+        name: 'Max Mara', axes: { logo: -1, craft: 2, time: -1, tone: -1, daily: 2, structure: 0 }, accentName: 'Camel', accent: '#C19A6B', city: 'Reggio Emilia', year: 1951, category: 'Outerwear', kr: '막스마라',
+        tagline: '평생 입을 코트 한 벌이라는 답',
+        heritage: '1951년 아킬레 마라모티가 이탈리아 레조에밀리아에서 설립. 기성복이 흔치 않던 시절 좋은 재단을 대량 생산으로 옮겨 놓은 브랜드.',
+        philosophy: '유행을 좇지 않고 한 가지를 계속 다듬는다. 카멜 코트라는 하나의 형태를 수십 년간 반복하며 완성해 왔다.',
+        colors: ['#C19A6B', '#1a1a1a', '#E8E0D5'],
+        moods: ['classic', 'minimal'],
+        signature: '101801 코트, 테디 베어 코트'
+      },
+      {
+        name: 'Ferragamo', axes: { logo: 0, craft: -2, time: -1, tone: 0, daily: 2, structure: 1 }, accentName: 'Ferragamo red', accent: '#A3242B', city: 'Firenze', year: 1927, category: 'Calzatura', kr: '페라가모',
+        tagline: '발이 편해야 아름답다는 구두장이의 신념',
+        heritage: '1927년 살바토레 페라가모가 피렌체에 공방을 열었다. 미국에서 배우들의 구두를 만들다 돌아와, 발의 해부학을 연구하며 구두를 설계했다.',
+        philosophy: '아름다움과 편안함은 타협 대상이 아니다. 발 뼈의 무게 분산까지 계산해 만든 구두가 진짜 럭셔리라고 믿는다.',
+        colors: ['#A3242B', '#5A3A22', '#D4AF37'],
+        moods: ['classic', 'modern'],
+        signature: '바라 펌프스, 간치니 로퍼'
+      },
+      {
+        name: 'Acne Studios', axes: { logo: 0, craft: 1, time: 1, tone: 0, daily: 2, structure: -1 }, accentName: 'Acne pink', accent: '#D4708C', city: 'Stockholm', year: 1996, category: 'Ready-to-wear', kr: '아크네 스튜디오',
+        tagline: '북유럽의 무심한 데일리 감각',
+        heritage: '1996년 스톡홀름에서 청바지 백 벌을 지인들에게 나눠 준 것이 시작. 디자인 스튜디오로 출발해 패션 브랜드가 된 독특한 이력을 가졌다.',
+        philosophy: '옷은 매일 입는 물건이라는 전제에서 출발한다. 특별하게 보이려 애쓰지 않고, 편안한 실루엣에 색과 비율로만 개성을 넣는다.',
+        colors: ['#D4708C', '#1a1a1a', '#B8B2A7'],
+        moods: ['modern', 'minimal'],
+        signature: '머스탱 데님, 페이스 니트, 울 스카프'
+      },
+      {
+        name: 'Chloé', axes: { logo: -1, craft: 2, time: 0, tone: 1, daily: 1, structure: -2 }, accentName: 'Chloé sand', accent: '#B8926A', city: 'Paris', year: 1952, category: 'Ready-to-wear', kr: '클로에',
+        tagline: '바람에 흔들리는 프렌치 보헤미안',
+        heritage: '1952년 가비 아지옹이 파리에서 설립. 쿠튀르가 지배하던 시대에 몸을 조이지 않는 고급 기성복을 처음 제안한 브랜드 중 하나.',
+        philosophy: '몸을 구속하지 않는 옷. 부드러운 원단이 걸을 때마다 만들어 내는 움직임 자체를 실루엣으로 삼는다.',
+        colors: ['#B8926A', '#F5EDE0', '#8B6F47'],
+        moods: ['modern', 'classic'],
+        signature: '파라티 백, 플로우 드레스, 우드 힐'
+      },
+      {
+        name: 'Alexander McQueen', axes: { logo: 1, craft: 2, time: 1, tone: -2, daily: -1, structure: 2 }, accentName: 'Oxblood', accent: '#5E1218', city: 'London', year: 1992, category: 'Couture', kr: '알렉산더 맥퀸',
+        tagline: '어둠 속에서 피어나는 극적인 아름다움',
+        heritage: '1992년 리 알렉산더 맥퀸이 런던에서 시작. 새빌 로우에서 익힌 정통 재단 기술 위에 연극적인 상상력을 얹어 런웨이를 무대로 바꿔 놓았다.',
+        philosophy: '아름다움과 불편함은 함께 갈 수 있다. 완벽한 테일러링을 바탕에 두고, 그 위에서 낭만과 어둠을 동시에 다룬다.',
+        colors: ['#5E1218', '#000000', '#C0C0C0'],
+        moods: ['edgy', 'bold'],
+        signature: '스컬 스카프, 아머 링, 오버사이즈 솔 스니커즈'
+      },
+      {
+        name: "Tod's", axes: { logo: -1, craft: -2, time: -2, tone: 0, daily: 2, structure: -2 }, accentName: 'Gommino brown', accent: '#7A5230', city: 'Marche', year: 1978, category: 'Calzatura', kr: '토즈',
+        tagline: '드라이브를 위해 만들어진 부드러움',
+        heritage: '이탈리아 마르케 지방의 가족 구두 공방에서 출발해 1978년 지금의 이름으로 자리 잡았다. 밑창에 고무 알갱이를 박은 드라이빙 슈즈로 알려졌다.',
+        philosophy: '장식보다 신었을 때의 감각이 먼저다. 한 켤레에 백 개가 넘는 공정을 들이면서도 결과물은 최대한 단순하게 남긴다.',
+        colors: ['#7A5230', '#1a1a1a', '#D6C7B0'],
+        moods: ['classic', 'minimal'],
+        signature: '고미노 드라이빙 슈즈, 디 백'
+      },
+      {
+        name: 'Marni', axes: { logo: -1, craft: 1, time: 2, tone: 2, daily: 1, structure: -1 }, accentName: 'Marni rust', accent: '#C75B2A', city: 'Milano', year: 1994, category: 'Ready-to-wear', kr: '마르니',
+        tagline: '어울리지 않을 색들을 붙여 놓는 즐거움',
+        heritage: '1994년 밀라노에서 모피 가공 가업을 배경으로 출발. 정통 이탈리안 럭셔리와 거리를 두고 예술가들의 옷장 같은 색채로 자리를 잡았다.',
+        philosophy: '규칙에 맞는 조합보다 눈이 즐거운 조합을 고른다. 색과 프린트를 예상 밖으로 섞어 옷을 하나의 콜라주로 만든다.',
+        colors: ['#C75B2A', '#2E5E3A', '#E8C547'],
+        moods: ['bold', 'edgy'],
+        signature: '트렁크 백, 스트라이프 니트, 컬러 블록 코트'
+      },
+      {
+        name: 'Jil Sander', axes: { logo: -2, craft: 1, time: 0, tone: -2, daily: 1, structure: 2 }, accentName: 'Sander grey', accent: '#7C838A', city: 'Hamburg', year: 1968, category: 'Minimal', kr: '질 샌더',
+        tagline: '덜어낼 것이 없을 때까지 덜어낸 선',
+        heritage: '1968년 독일 함부르크에서 질 샌더가 시작. 화려함이 곧 럭셔리로 여겨지던 시대에 정반대 방향을 택해 미니멀리즘의 여왕으로 불렸다.',
+        philosophy: '옷에서 불필요한 것을 전부 걷어내면 남는 것은 선과 비율이다. 그 둘이 정확하면 장식은 필요 없다.',
+        colors: ['#FFFFFF', '#1a1a1a', '#7C838A'],
+        moods: ['minimal', 'modern'],
+        signature: '탱글 백, 구조적 화이트 셔츠, 미니멀 코트'
+      },
+      {
+        name: 'Comme des Garçons', axes: { logo: 0, craft: 2, time: 2, tone: -1, daily: -1, structure: 2 }, accentName: 'CdG red', accent: '#C0272D', city: 'Tokyo', year: 1969, category: 'Avant-garde', kr: '꼼 데 가르송',
+        tagline: '옷이 몸을 따라야 한다는 전제를 버린 곳',
+        heritage: '1969년 가와쿠보 레이가 도쿄에서 설립. 1981년 파리 데뷔 당시 검고 헤진 옷들로 서구 패션계에 충격을 줬다.',
+        philosophy: '옷은 몸의 형태를 따라갈 의무가 없다. 부풀리고 덧붙이고 비틀어 몸 주위에 새로운 형태를 만드는 것을 목표로 한다.',
+        colors: ['#000000', '#C0272D', '#FFFFFF'],
+        moods: ['edgy', 'bold'],
+        signature: '하트 로고 라인, 럼프 컬렉션, 블랙 실루엣'
       }
     ];
 
     const QUIZ_QUESTIONS = [
       {
-        question: '주말 데이트, 어떤 옷을 고르시나요?',
+        question: '새로 산 가방, 사람들이 알아봐 주면 좋겠나요?',
+        note: '누구에게 보여주고 싶은지에 대한 질문이에요',
         options: [
-          { text: '깔끔한 셔츠와 슬랙스, 단정하게', moods: ['minimal', 'classic'] },
-          { text: '화려한 패턴의 원피스로 시선을 끌고 싶어요', moods: ['bold', 'edgy'] },
-          { text: '편한 니트에 데님, 꾸안꾸 스타일', moods: ['minimal', 'modern'] },
-          { text: '블랙 톤으로 시크하게 맞춰요', moods: ['edgy', 'modern'] }
+          { text: '아무도 몰라도 내가 알면 충분해요', axes: { logo: -2 } },
+          { text: '아는 사람만 알아보면 기분 좋죠', axes: { logo: -1, craft: -1 } },
+          { text: '어디 거냐고 물어봐 주면 좋아요', axes: { logo: 1 } },
+          { text: '보자마자 알아보는 게 좋아요', axes: { logo: 2, tone: 1 } }
         ]
       },
       {
-        question: '가장 끌리는 공간의 분위기는?',
+        question: '옷 가게에서 손이 먼저 가는 소재는?',
+        note: '눈보다 손이 먼저 반응하는 쪽으로',
         options: [
-          { text: '오래된 유럽 도시의 고풍스러운 골목', moods: ['classic', 'bold'] },
-          { text: '미술관처럼 여백이 많은 화이트 큐브', moods: ['minimal', 'modern'] },
-          { text: '빈티지 소품이 가득한 빛바랜 다락방', moods: ['edgy', 'bold'] },
-          { text: '미니멀한 호텔 로비, 깔끔하고 차분한', moods: ['minimal', 'classic'] }
+          { text: '결이 살아있는 두툼한 가죽', axes: { craft: -2, time: -1, structure: 1 } },
+          { text: '매끄럽고 서늘한 실크', axes: { craft: 1, daily: -1, structure: -2 } },
+          { text: '포근하게 감기는 니트나 트위드', axes: { craft: 2, structure: -1 } },
+          { text: '구김 없이 튼튼한 나일론이나 캔버스', axes: { craft: -1, daily: 2, structure: 1 } }
         ]
       },
       {
-        question: '가방을 고를 때 가장 중요한 기준은?',
+        question: '옷장 문을 열었을 때 가장 많은 색은?',
+        note: '',
         options: [
-          { text: '시대가 지나도 변하지 않는 클래식함', moods: ['classic'] },
-          { text: '로고 없이도 알아보는 디테일과 텍스처', moods: ['minimal'] },
-          { text: '한눈에 시선을 끄는 과감한 디자인', moods: ['bold', 'edgy'] },
-          { text: '실용적이면서도 트렌디한 감각', moods: ['modern'] }
+          { text: '블랙과 그레이', swatch: '#1a1a1a', axes: { tone: -2 } },
+          { text: '베이지와 아이보리', swatch: '#D9CFC1', axes: { tone: -1, craft: -1 } },
+          { text: '네이비와 브라운', swatch: '#4A3B2A', axes: { tone: 0, time: -1 } },
+          { text: '이것저것 컬러풀하게', swatch: '#C8642A', axes: { tone: 2 } }
         ]
       },
       {
-        question: '평소 본인의 패션 철학에 가까운 말은?',
+        question: '10년 넘게 쓴 물건이 낡았어요. 어떻게 하세요?',
+        note: '',
         options: [
-          { text: '적을수록 더 아름답다', moods: ['minimal'] },
-          { text: '패션은 입는 예술이다', moods: ['edgy', 'bold'] },
-          { text: '우아함은 절대 유행을 타지 않는다', moods: ['classic'] },
-          { text: '규칙은 깨지기 위해 존재한다', moods: ['edgy', 'modern'] }
+          { text: '수선해서 계속 써요', axes: { time: -2, daily: 1 } },
+          { text: '똑같은 걸 다시 사요', axes: { time: -1 } },
+          { text: '이참에 다른 스타일로 바꿔요', axes: { time: 1 } },
+          { text: '요즘 나온 걸로 새로 사요', axes: { time: 2, tone: 1 } }
+        ]
+      },
+      {
+        question: '아끼는 물건은 언제 꺼내 쓰세요?',
+        note: '',
+        options: [
+          { text: '아낄수록 낡아요, 매일 써요', axes: { daily: 2 } },
+          { text: '자리에 따라 골라서 써요', axes: { daily: 0 } },
+          { text: '정말 특별한 날에만요', axes: { daily: -2, tone: -1 } }
+        ]
+      },
+      {
+        question: '둘 중 하나만 고른다면?',
+        note: '고민되겠지만 하나만요',
+        options: [
+          { text: '한 사람이 40시간 손으로 만든 것', axes: { time: -2, craft: -2 } },
+          { text: '처음 보는 방식으로 만든 것', axes: { time: 2, craft: 1 } }
+        ]
+      },
+      {
+        question: '여행 짐 쌀 때 어느 쪽에 가까우세요?',
+        note: '',
+        options: [
+          { text: '가방 하나에 최소한만', axes: { tone: -1, daily: 2, structure: 1 } },
+          { text: '상황별로 다 챙겨 가요', axes: { craft: 1, daily: -1, tone: 1 } }
+        ]
+      },
+      {
+        question: '길에서 옷 잘 입은 사람을 봤어요. 먼저 눈에 들어온 건?',
+        note: '',
+        options: [
+          { text: '옷의 실루엣과 핏', axes: { craft: 2, structure: 2 } },
+          { text: '신발이나 가방의 마감', axes: { craft: -2, logo: -1 } },
+          { text: '색을 맞춘 방식', axes: { tone: 1 } },
+          { text: '설명하기 어려운 분위기', axes: { time: 1, logo: -1, structure: -1 } }
+        ]
+      },
+      {
+        question: '평소 옷 입을 때 더 신경 쓰는 쪽은?',
+        note: '',
+        options: [
+          { text: '어디에 있어도 어색하지 않게', axes: { time: -2, tone: -1 } },
+          { text: '나답게 보이게', axes: { time: 1, logo: -1 } }
+        ]
+      },
+      {
+        question: '나에게 좋은 물건이란?',
+        note: '마지막 질문이에요',
+        options: [
+          { text: '오래 곁에 두게 되는 것', axes: { time: -2, daily: 1 } },
+          { text: '나를 설명해 주는 것', axes: { logo: 2 } },
+          { text: '볼 때마다 기분이 좋아지는 것', axes: { tone: 2, daily: -1 } },
+          { text: '남들이 잘 안 가진 것', axes: { time: 2, logo: -2 } }
+        ]
+      },
+      {
+        question: '옷을 고를 때 어느 쪽에 손이 가세요?',
+        note: '',
+        options: [
+          { text: '몸에 부드럽게 감기는 옷', axes: { structure: -2 } },
+          { text: '어깨와 허리 라인이 딱 잡힌 옷', axes: { structure: 2, craft: 1 } }
+        ]
+      },
+      {
+        question: '하루 종일 입고 나니 옷이 구겨졌어요.',
+        note: '',
+        options: [
+          { text: '구김도 그 옷의 표정이죠', axes: { structure: -2, craft: -1, daily: 1 } },
+          { text: '다려서 반듯하게 만들어요', axes: { structure: 2, daily: -1 } }
+        ]
+      },
+      {
+        question: '방에 하나만 둘 수 있다면?',
+        note: '',
+        options: [
+          { text: '푹 파묻히는 둥근 소파', axes: { structure: -2, daily: 1 } },
+          { text: '선이 살아있는 각진 의자', axes: { structure: 2, tone: -1 } },
+          { text: '손때 묻은 오래된 나무 가구', axes: { time: -2, craft: -1 } },
+          { text: '처음 보는 형태의 오브제', axes: { time: 2, structure: 1, tone: 1 } }
         ]
       }
     ];
 
+    const AXIS_INFO = {
+      logo:  { low: '로고 없이 조용한 쪽',   high: '한눈에 알아보는 쪽' },
+      craft: { low: '가죽과 공예에 끌리는 쪽', high: '옷과 실루엣에 끌리는 쪽' },
+      time:  { low: '변하지 않는 것을 믿는 쪽', high: '새로운 시도에 끌리는 쪽' },
+      tone:  { low: '색을 덜어내는 쪽',      high: '색을 즐기는 쪽' },
+      daily: { low: '특별한 날을 위해 아끼는 쪽', high: '매일 곁에 두는 쪽' },
+      structure: { low: '부드럽게 흐르는 쪽',    high: '선이 또렷한 쪽' }
+    };
+
     let currentMode = 'quiz';
     let quizIndex = 0;
-    let moodScores = { classic: 0, modern: 0, bold: 0, minimal: 0, edgy: 0 };
+    let axisScores = { logo: 0, craft: 0, time: 0, tone: 0, daily: 0, structure: 0 };
 
     const MOOD_LABELS = {
       classic: '클래식', modern: '모던', bold: '화려함', minimal: '미니멀', edgy: '아방가르드'
@@ -430,9 +725,13 @@
         btn.classList.toggle('active', btn.dataset.mode === mode);
       });
       if (mode === 'quiz') {
-        quizView.style.display = 'block';
-        resultView.style.display = 'none';
         browseView.style.display = 'none';
+        if (quizIndex >= QUIZ_QUESTIONS.length) {
+          resetQuiz();
+        } else {
+          quizView.style.display = 'block';
+          resultView.style.display = 'none';
+        }
       } else {
         quizView.style.display = 'none';
         resultView.style.display = 'none';
@@ -450,16 +749,19 @@
       const q = QUIZ_QUESTIONS[quizIndex];
       quizCard.innerHTML = `
         <div class="quiz-question">${q.question}</div>
+        ${q.note ? `<div class="quiz-note">${q.note}</div>` : ''}
         <div class="quiz-options">
-          ${q.options.map((opt, i) => `<div class="quiz-option" data-opt="${i}">${opt.text}</div>`).join('')}
+          ${q.options.map((opt, i) => `<div class="quiz-option" data-opt="${i}">${opt.swatch ? `<span class="opt-swatch" style="background:${opt.swatch}"></span>` : ''}${opt.text}</div>`).join('')}
         </div>
       `;
     }
 
     function answerQuiz(optIndex) {
       const q = QUIZ_QUESTIONS[quizIndex];
+      if (!q) return;
       const selected = q.options[optIndex];
-      selected.moods.forEach(m => moodScores[m] += 1);
+      if (!selected) return;
+      Object.entries(selected.axes).forEach(([k, v]) => { axisScores[k] += v; });
 
       quizIndex++;
       if (quizIndex < QUIZ_QUESTIONS.length) {
@@ -472,20 +774,47 @@
     function showResult() {
       quizView.style.display = 'none';
 
-      const topMood = Object.entries(moodScores).sort((a, b) => b[1] - a[1])[0][0];
-      const matched = BRANDS.filter(b => b.moods.includes(topMood));
-      const pick = matched.length > 0
-        ? matched[Math.floor(Math.random() * matched.length)]
-        : BRANDS[Math.floor(Math.random() * BRANDS.length)];
+      const KEYS = ['logo', 'craft', 'time', 'tone', 'daily', 'structure'];
+      const range = {};
+      KEYS.forEach(k => {
+        let lo = 0, hi = 0;
+        QUIZ_QUESTIONS.forEach(q => {
+          const vals = q.options.map(o => o.axes[k] || 0);
+          lo += Math.min(...vals);
+          hi += Math.max(...vals);
+        });
+        range[k] = { lo, hi };
+      });
+
+      const norm = {};
+      KEYS.forEach(k => {
+        const { lo, hi } = range[k];
+        const ratio = hi === lo ? 0.5 : (axisScores[k] - lo) / (hi - lo);
+        norm[k] = ratio * 4 - 2;
+      });
+
+      const ranked = BRANDS.map(b => {
+        const dist = Math.sqrt(KEYS.reduce((sum, k) => sum + Math.pow(norm[k] - b.axes[k], 2), 0));
+        return { brand: b, dist };
+      }).sort((a, b) => a.dist - b.dist);
+
+      const pick = ranked[0].brand;
+      const runnerUps = ranked.slice(1, 3).map(r => r.brand);
+
+      const topAxis = KEYS.map(k => ({ k, v: norm[k] }))
+        .sort((a, b) => Math.abs(b.v) - Math.abs(a.v))[0];
+      const profile = topAxis.v === 0
+        ? '어느 쪽으로도 치우치지 않는'
+        : (topAxis.v < 0 ? AXIS_INFO[topAxis.k].low : AXIS_INFO[topAxis.k].high);
 
       resultView.innerHTML = `
-        <div class="result-card">
-          <div class="result-label">당신의 스타일은 ${MOOD_LABELS[topMood]}</div>
-          <div class="result-brand">${pick.kr}</div>
+        <div class="result-card accent-top" style="--accent-c:${pick.accent}">
+          <div class="brand-caption" style="color:${pick.accent}">${pick.category} · ${pick.city} ${pick.year}</div>
+          <div class="result-label">당신은 ${profile}</div>
+          <div class="brand-latin">${pick.name}</div>
+          <div class="brand-kr">${pick.kr}</div>
           <div class="result-tagline">${pick.tagline}</div>
-          <div class="result-colors">
-            ${pick.colors.map(c => `<div class="color-swatch" style="background:${c}"></div>`).join('')}
-          </div>
+          <div class="accent-chip"><i></i>${pick.accentName}</div>
           <div class="result-section">
             <h4>헤리티지</h4>
             <p>${pick.heritage}</p>
@@ -498,7 +827,14 @@
             <h4>시그니처 아이템</h4>
             <p>${pick.signature}</p>
           </div>
-          <button class="retry-btn" id="retryBtn">다시 진단하기</button>
+          <div class="result-section">
+            <h4>가까운 브랜드</h4>
+            <p class="runner-ups">${runnerUps.map(b => `${b.name} · ${b.kr}`).join('<br>')}</p>
+          </div>
+          <div class="result-actions">
+            <button class="share-btn" id="shareBtn" data-brand="${pick.kr}">결과 공유하기</button>
+            <button class="retry-btn" id="retryBtn">다시 진단하기</button>
+          </div>
         </div>
       `;
       resultView.style.display = 'block';
@@ -506,7 +842,7 @@
 
     function resetQuiz() {
       quizIndex = 0;
-      moodScores = { classic: 0, modern: 0, bold: 0, minimal: 0, edgy: 0 };
+      axisScores = { logo: 0, craft: 0, time: 0, tone: 0, daily: 0, structure: 0 };
       resultView.style.display = 'none';
       quizView.style.display = 'block';
       renderQuiz();
@@ -514,26 +850,26 @@
 
     function renderBrowse() {
       browseGrid.innerHTML = BRANDS.map((b, i) => `
-        <div class="brand-card" data-brand="${i}">
-          <div class="brand-name">${b.kr}</div>
-          <div class="brand-mood">${b.moods.map(m => MOOD_LABELS[m]).join(' · ')}</div>
-          <div class="brand-colors">
-            ${b.colors.map(c => `<div class="mini-swatch" style="background:${c}"></div>`).join('')}
-          </div>
+        <div class="brand-card accent-top" data-brand="${i}" style="--accent-c:${b.accent}">
+          <div class="brand-caption" style="color:${b.accent}">${b.city} ${b.year}</div>
+          <div class="brand-latin">${b.name}</div>
+          <div class="brand-kr">${b.kr} · ${b.moods.map(m => MOOD_LABELS[m]).join(' · ')}</div>
+          <div class="accent-chip"><i></i>${b.accentName}</div>
         </div>
       `).join('');
     }
 
     function openDetail(brandIdx) {
       const b = BRANDS[brandIdx];
+      detailCard.style.setProperty("--accent-c", b.accent);
+      detailCard.classList.add("accent-top");
       detailCard.innerHTML = `
         <button class="detail-close" id="detailCloseBtn">×</button>
-        <div class="result-label">${b.name}</div>
-        <div class="result-brand">${b.kr}</div>
+        <div class="brand-caption" style="color:${b.accent}">${b.category} · ${b.city} ${b.year}</div>
+        <div class="brand-latin">${b.name}</div>
+        <div class="brand-kr">${b.kr}</div>
         <div class="result-tagline">${b.tagline}</div>
-        <div class="result-colors">
-          ${b.colors.map(c => `<div class="color-swatch" style="background:${c}"></div>`).join('')}
-        </div>
+        <div class="accent-chip"><i></i>${b.accentName}</div>
         <div class="result-section">
           <h4>헤리티지</h4>
           <p>${b.heritage}</p>
@@ -563,8 +899,34 @@
       if (opt) answerQuiz(Number(opt.dataset.opt));
     });
 
+    async function shareResult(btn) {
+      const brand = btn.dataset.brand;
+      const url = location.href.split('#')[0];
+      const text = `나와 가장 가까운 브랜드는 ${brand}였어요. 당신의 브랜드는?`;
+      const label = btn.textContent;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: 'LUXE MATCH', text, url });
+          return;
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+        }
+      }
+
+      try {
+        await navigator.clipboard.writeText(`${text}\n${url}`);
+        btn.textContent = '링크 복사됨';
+      } catch (err) {
+        btn.textContent = '복사 실패';
+      }
+      btn.disabled = true;
+      setTimeout(() => { btn.textContent = label; btn.disabled = false; }, 2000);
+    }
+
     resultView.addEventListener('click', (e) => {
       if (e.target.id === 'retryBtn') resetQuiz();
+      if (e.target.id === 'shareBtn') shareResult(e.target);
     });
 
     browseGrid.addEventListener('click', (e) => {
